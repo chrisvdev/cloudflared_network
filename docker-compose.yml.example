@@ -1,0 +1,16 @@
+services:
+  cloudflared:
+    restart: always
+    container_name: cloudflared_tunnel
+    image: cloudflare/cloudflared:latest
+    networks:
+      - cloudflare
+    environment:
+      - CLOUDFLARED_TOKEN=${CLOUDFLARED_TOKEN}
+    volumes:
+      - ./config.yml:/etc/cloudflared
+    command: ["tunnel","--no-autoupdate","run", "--token", "${CLOUDFLARED_TOKEN}"]
+
+networks:
+  cloudflare:
+    driver: bridge

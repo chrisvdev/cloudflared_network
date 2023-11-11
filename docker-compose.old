@@ -1,0 +1,25 @@
+services:
+  cloudflared:
+    container_name: cloudflared_tunnel
+    image: cloudflare/cloudflared:latest
+    networks:
+      - cloudflare
+    volumes:
+      - ./data:/root/.cloudflared/
+    command: 'tunnel --config /root/.cloudflared/config.yml run'
+    user: root
+    restart: unless-stopped
+
+    
+  web_server:
+    image: nginx
+    container_name: web_server
+    ports:
+      - "20000:80"
+    networks:
+      - cloudflare
+    restart: always
+networks:
+  cloudflare:
+    name: cloudflare
+    driver: bridge

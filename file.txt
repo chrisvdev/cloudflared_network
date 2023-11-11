@@ -1,0 +1,8 @@
+tunnel: 
+credentials-file: /root/.cloudflared/.json
+#warp-routing:
+#    enabled: true
+# ingress:
+# - hostname: chrisv.tech
+#   service: http://web_server:80
+
