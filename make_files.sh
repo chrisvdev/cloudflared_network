@@ -1,13 +1,17 @@
 #!/bin/bash
 
 if [ -z "$TOKEN" ]; then
-    echo "Por favor, proporciona el token de Cloudflared."
-    exit 1
+  echo "Por favor, proporciona el token de Cloudflared."
+  exit 1
+else 
+  echo "Se recibio el Token..."
 fi
 
 if [ -z "$TUUID" ]; then
-    echo "Por favor, proporciona la UUID del tunnel."
-    exit 1
+  echo "Por favor, proporciona la UUID del tunnel."
+  exit 1
+else 
+  echo "Se recibio el Token..."
 fi
 
 token="$TOKEN"
@@ -34,12 +38,7 @@ else
 fi
 
 # Creando el contenido del archivo de configuracion
-config="tunnel: $UUID\ncredentials-file: $HOME/.cloudflared/$UUID.json\n
-#warp-routing:\n
-#    enabled: true\n
-# ingress:\n
-# - hostname: "chrisv.tech"\n
-#   service: http://web_server:80\n" 
+config="tunnel: $UUID\ncredentials-file: $HOME/.cloudflared/$UUID.json\n\ningress:\n  - hostname: "chrisv.tech"\n    service: http://web_server:80\n" 
 
 # Guardando el resultado en un archivo
 if [[ ! -f $HOME/.cloudflared/config.yml ]]; then

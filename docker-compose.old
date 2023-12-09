@@ -23,3 +23,42 @@ networks:
   cloudflare:
     name: cloudflare
     driver: bridge
+
+
+    services:
+  cloudflared:
+    restart: always
+    container_name: cloudflared_tunnel
+    image: cloudflare/cloudflared:latest
+    networks:
+      - cloudflare
+    environment:
+      - CLOUDFLARED_TOKEN=${CLOUDFLARED_TOKEN}
+      - TUNNEL_TOKEN=${CLOUDFLARED_TOKEN}
+    # volumes:
+      #- ./config.yml:/etc/cloudflared/config.yml
+      #- ./data:/home/nonroot/.cloudflared
+      #- ./config.yml:/home/nonroot/.cloudflared/config.yml
+    command: ["tunnel","--no-autoupdate","run", "--token", "${CLOUDFLARED_TOKEN}"]
+    #command: tunnel login
+
+    
+  web_server:
+    image: nginx
+    container_name: web_server
+    networks:
+      - cloudflare
+    restart: always
+
+  web_server2:
+    image: nginx
+    container_name: web_server2
+    networks:
+    #  - postgres
+      - cloudflare
+    restart: always
+
+networks:
+  cloudflare:
+    name: cloudflare
+    driver: bridge

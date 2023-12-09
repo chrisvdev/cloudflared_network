@@ -1,12 +1,9 @@
-tunnel: 2370f1f6-e1f8-4a7c-994a-6619d8b0f193
-credentials-file: /root/.cloudflared/2370f1f6-e1f8-4a7c-994a-6619d8b0f193.json
-#warp-routing:
-#    enabled: true
+tunnel: 604e356f-4589-403b-9d46-9dfe817e01c4
+credentials-file: /root/.cloudflared/604e356f-4589-403b-9d46-9dfe817e01c4.json
+
 ingress:
-  - hostname: "chrisv.tech"
+  - hostname: chrisv.tech
     service: http://web_server:80
-  #- hostname: gitlab.widgetcorp.tech
-  #  service: http://localhost:80
-  #- hostname: gitlab-ssh.widgetcorp.tech
-  #  service: ssh://localhost:22
+  - hostname: sub.chrisv.tech
+    service: http://web_server2:80
   - service: http_status:404

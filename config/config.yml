@@ -1,0 +1,7 @@
+tunnel: 6a05a2c0-f9da-45b4-ab2e-aac3bd87b37b
+credentials-file: /root/.cloudflared/6a05a2c0-f9da-45b4-ab2e-aac3bd87b37b.json
+
+ingress:
+ - hostname: chrisv.tech
+   service: http://web_server:80
+
