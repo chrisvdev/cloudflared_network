@@ -1,0 +1,11 @@
+cloudflared tunnel login
+
+cloudflared tunnel list
+cloudflared tunnel create <NAME or UUID>
+    - No hay manera para traerse el archivo .json si no es creandolo localmente
+cloudflared tunnel delete <NAME or UUID>
+cloudflared tunnel info <NAME or UUID>
+
+cloudflared tunnel route yourdns.url
+
+cloudflared tunnel --config path/config.yaml run <NAME or UUID>
