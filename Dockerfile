@@ -7,6 +7,7 @@ COPY --chmod=500 ./init.sh /usr/local/bin/
 
 RUN /bin/bash -c 'mkdir -p --mode=0755 /usr/share/keyrings && \
 apt update -y && \
+apt upgrade -y && \
 apt install curl jq -y && \
 curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null && \
 echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main" | tee /etc/apt/sources.list.d/cloudflared.list && \

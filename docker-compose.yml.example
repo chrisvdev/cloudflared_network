@@ -1,16 +1,25 @@
 services:
   cloudflared:
     restart: always
-    container_name: cloudflared_tunnel
-    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    image: chrisvdev23/cloudflared:bookworm
     networks:
       - cloudflare
     environment:
-      - CLOUDFLARED_TOKEN=${CLOUDFLARED_TOKEN}
+      - UUID=<the_tunnel_uuid> // comment this to ingress on config mode
     volumes:
-      - ./config.yml:/etc/cloudflared
-    command: ["tunnel","--no-autoupdate","run", "--token", "${CLOUDFLARED_TOKEN}"]
+      - ./data:/root/.cloudflared
+    
+  landing_page:
+    image: nginx
+    container_name: landing_page
+    networks:
+      - cloudflare
+    restart: always
+    volumes:
+      - /home/user/your_landingpage_folder:/usr/share/nginx/html:ro
 
 networks:
   cloudflare:
+    name: cloudflare
     driver: bridge
