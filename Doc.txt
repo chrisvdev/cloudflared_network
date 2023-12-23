@@ -1,0 +1,25 @@
+Generame el contenido hecho en Markdown para un readme.md del proyecto que estoy haciendo, explicando los siguiente pasos 
+para poder usar la imagen de docker llamada "chrisvdev23/cloudflared" y poder usarla para gestionar un tunel de cloudflare.
+
+El contenedor contiene el comando cloudflared que provee clouflare como 
+cliente para poder conectarse y gestionar el servicios de tuneles.
+
+El contenedor tiene 2 modos y se ejecutan dependiendo de si existe o no una variable de entorno llamada UUID
+que hace referencia al UUID del tunel que hayamos configurado. en caso no existir, el contenedor entrara
+en modo "config" con el que podes acceder mediante una terminal interactiva para poder configurar tu tunel.
+Si existe la variable UUID entra en modo normal y usa los archivos generados y la variable para poder 
+gestionar y conectarse al tunel
+
+es necesario que se monte un volumen a la imagen para persistir el contenido de la direccion "/root/.cloudflared"
+
+Los pasos para poder configurar el contenedor una vez ejecutado en el modo "config" 
+
+1) entrar al contenedor con docker "exec -it id_or_name_of_container bash"
+2) ejecutar dentro de nuestro contenedor el comando "cloudflared tunnel login"
+y seguir la indicaciones para poder loguear el cliente con cloudflare
+3) Crear el tunel con el comando "cloudflared tunnel create <NAME or UUID>" (si ya creaste antes el tunel 
+y necesitas generar los archivos nuevamente vas a tener que eliminar el tunel anterior con el comando
+"cloudflared tunnel delete <NAME or UUID>". Podes listar los tuneles con "cloudflared tunnel list")
+4) puedes salir de la terminal interactiva del contenedor para que dentro de la carpeta que hayas montado en "/root/.cloudflared"
+crear el archivo services.json con el formato requerido como el archivo services.json.example muestra para poder ejecutar
+el contenedor de manera correcta.
