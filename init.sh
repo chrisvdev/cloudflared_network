@@ -2,7 +2,7 @@
 
 # set -x
 
-echo -e "╔════════════════════════════════════════════════════════════════════════════╗\n║   Custom "Cloudflared" container for Cloudflare Tunnel made by /ChrisVDev    ║\n║                    and the community for the community.                    ║\n║                                                                            ║\n║                              Version: 1.0.0                                ║\n╚════════════════════════════════════════════════════════════════════════════╝"
+echo -e "╔════════════════════════════════════════════════════════════════════════════╗\n║   Custom "Cloudflared" container for Cloudflare Tunnel made by /ChrisVDev    ║\n║                    and the community for the community.                    ║\n║                                                                            ║\n║                              Version: 1.1.0                                ║\n╚════════════════════════════════════════════════════════════════════════════╝"
 
 echo "Verifying configuration..."
 
@@ -10,12 +10,12 @@ echo "Verifying configuration..."
 TUUID="$UUID"
 if [ "$TUUID" != "" ]; then
     # Verifica la existencia de archivos en las rutas especificadas
-    if [ -e "/root/.cloudflared/cert.pem" ] && [ -n "$(find /root/.cloudflared -name '*.json' -print -quit)" ]; then
-        if [ -e "/root/.cloudflared/services.json" ]; then
-            if [ -e "/root/.cloudflared/config.yml" ]; then
-                rm /root/.cloudflared/config.yml
+    if [ -e "/home/flare/.cloudflared/cert.pem" ] && [ -n "$(find /home/flare/.cloudflared -name '*.json' -print -quit)" ]; then
+        if [ -e "/home/flare/.cloudflared/services.json" ]; then
+            if [ -e "/home/flare/.cloudflared/config.yml" ]; then
+                rm /home/flare/.cloudflared/config.yml
             fi
-            services_file="/root/.cloudflared/services.json"
+            services_file="/home/flare/.cloudflared/services.json"
             services=$(jq length "$services_file")
             if [ "$services" == "0" ]; then
                 echo -e "There are no services registered in services.json...\nYou need to set up at least one to run the container..."
@@ -31,7 +31,7 @@ if [ "$TUUID" != "" ]; then
             done
             config+="  - service: http_status:404\n"
             echo -e "$config" > "$HOME/.cloudflared/config.yml"
-            cloudflared tunnel --config /root/.cloudflared/config.yml run $TUUID
+            cloudflared tunnel --config /home/flare/.cloudflared/config.yml run $TUUID
         else
             echo "Create the services.json file so you can continue..."
             exit 1    

@@ -2,13 +2,13 @@ services:
   cloudflared:
     restart: always
     container_name: cloudflared
-    image: chrisvdev23/cloudflared:bookworm
+    image: chrisvdev23/cloudflared:2025.2.0-bookworm
     networks:
       - cloudflare
     environment:
       - UUID=<the_tunnel_uuid> // comment this to ingress on config mode
     volumes:
-      - ./data:/root/.cloudflared
+      - ./data:/home/flare/.cloudflared
     
   landing_page:
     image: nginx

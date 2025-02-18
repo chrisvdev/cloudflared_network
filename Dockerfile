@@ -2,30 +2,40 @@ FROM debian:bookworm
 
 WORKDIR /root
 
-# COPY --chmod=500 ./make_files.sh /usr/local/bin/
-COPY --chmod=500 ./init.sh /usr/local/bin/
+# install cloudflared
 
-RUN /bin/bash -c 'mkdir -p --mode=0755 /usr/share/keyrings && \
-apt update -y && \
-apt install curl jq -y && \
-curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null && \
-echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main" | tee /etc/apt/sources.list.d/cloudflared.list && \
-apt update && apt install cloudflared -y'
+RUN /bin/bash -c 'apt update -y && \
+apt upgrade -y && \
+apt install wget jq -y && \
+wget https://github.com/cloudflare/cloudflared/releases/download/2025.2.0/cloudflared-linux-amd64.deb && \
+apt remove wget -y && \
+apt autoremove -y && \
+apt clean && \
+dpkg -i cloudflared-linux-amd64.deb && \
+rm cloudflared-linux-amd64.deb'
 
-# ENTRYPOINT ["/usr/local/bin/make_files.sh"]
-ENTRYPOINT ["/usr/local/bin/init.sh"]
+# create flare user for a secure execution and inject the init script
 
-# sysctl -w net.core.rmem_max=4194304 && \
-# sysctl -w net.core.wmem_max=4194304 && \
+RUN /bin/bash -c 'groupadd --system --gid 666 cloud && \
+adduser --system --uid 666 flare --gid 666 && \
+mkdir -p /home/flare/ && \
+chown flare:cloud /home/flare/ && \
+mkdir -p /home/flare/.cloudflared && \
+chown flare:cloud /home/flare/.cloudflared'
 
-# docker build --no-cache . -t chrisvdev23/cloudflared:bookworm 
+USER flare
 
-# para configurar -> docker run -d -e CONFIG=1 -v $PWD/data:/root/.cloudflared chrisvdev23/cloudflared:bookworm
-# para ejecutar -> docker run -d -e UUID=604e356f-4589-403b-9d46-9dfe817e01c4 -v $PWD/data:/root/.cloudflared chrisvdev23/cloudflared:bookworm
+WORKDIR /home/flare
 
-# docker stop $(docker ps -a -q)
+COPY --chown=flare:cloud --chmod=500 ./init.sh /home/flare/
 
-# sobre que imagen traba
-# integrar los archivos que necesita a la imagen
-# ejectura los comandos para instalar cloudflared
-# ENTRYPOINT ejecutar a make_file.sh pasandole argumentos el Token y luego Tunnel UUID 
+ENV HOME=/home/flare
+
+ENTRYPOINT ["/home/flare/init.sh"]
+
+# docker build --no-cache . -t chrisvdev23/cloudflared:1.1.0-2025.2.0-bookworm 
+
+# para configurar -> docker run -d -v $PWD/data:/home/flare/.cloudflared:rw chrisvdev23/cloudflared:1.1.0-2025.2.0-bookworm
+# para ejecutar -> docker run -d -e UUID=604e356f-4589-403b-9d46-9dfe817e01c4 -v $PWD/data:/root/.cloudflared:rw -u flare:cloud chrisvdev23/cloudflared:1.1.0-2025.2.0-bookworm
+
+# docker stop $(docker ps -a -q) 
